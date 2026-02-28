@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AETHER — Structure determines outcomes.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1410;
+    --bg2: #211C16;
+    --bg3: #2A221A;
+    --gold: #C9A14A;
+    --gold-light: #E2C07A;
+    --gold-dim: rgba(201,161,74,0.15);
+    --text: #F0EAE0;
+    --text-muted: #8A7D6A;
+    --text-dim: #5A5048;
+    --border: rgba(201,161,74,0.18);
+    --border-dim: rgba(255,255,255,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(26,20,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  nav { display: flex; gap: 40px; align-items: center; }
+
+  nav a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover, nav a.active { color: var(--gold); }
+
+  /* ── HERO SPLIT ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    padding-top: 64px;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px 80px 80px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.1s forwards;
+  }
+
+  .hero-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 4.5vw, 62px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 460px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    background: var(--gold);
+    color: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.4s forwards;
+    width: fit-content;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary::after {
+    content: '→';
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+  .btn-primary:hover::after { transform: translateX(4px); }
+
+  .hero-note {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+
+  /* ── HERO RIGHT ── */
+  .hero-right {
+    position: relative;
+    background: linear-gradient(135deg, #110E0A 0%, #1E1710 50%, #0E0B08 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 70% 30%, rgba(201,161,74,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 30% 70%, rgba(201,161,74,0.04) 0%, transparent 60%);
+  }
+
+  .float-text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .float-item {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold);
+    font-style: italic;
+    opacity: 0;
+    animation: floatIn 0.8s ease forwards;
+  }
+
+  .float-item:nth-child(1) { font-size: 42px; font-weight: 300; animation-delay: 0.6s; }
+  .float-item:nth-child(2) { font-size: 28px; font-weight: 300; color: rgba(201,161,74,0.5); animation-delay: 0.75s; }
+  .float-item:nth-child(3) { font-size: 34px; font-weight: 300; animation-delay: 0.9s; }
+  .float-item:nth-child(4) { font-size: 26px; font-weight: 300; color: rgba(201,161,74,0.5); animation-delay: 1.05s; }
+  .float-item:nth-child(5) { font-size: 20px; font-weight: 300; color: rgba(201,161,74,0.3); animation-delay: 1.2s; letter-spacing: 0.08em; font-family: 'Inter', sans-serif; font-style: normal; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; }
+
+  .hero-divider {
+    width: 1px;
+    height: 60px;
+    background: var(--border);
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 0.5s ease 1.3s forwards;
+  }
+
+  /* ── CARDS SECTION ── */
+  .section-cards {
+    padding: 120px 80px;
+    border-top: 1px solid var(--border-dim);
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 64px;
+    max-width: 500px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-dim);
+    border: 1px solid var(--border-dim);
+  }
+
+  .card {
+    background: var(--bg);
+    padding: 48px 40px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .card:hover { background: var(--bg2); }
+
+  .card-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--gold-dim);
+    line-height: 1;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .card-line {
+    position: absolute;
+    top: 0; left: 40px; right: 40px;
+    height: 1px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+  .card:hover .card-line { background: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 32px 80px;
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-link {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    header { padding: 0 24px; }
+    nav { gap: 24px; }
+
+    .hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .hero-left {
+      padding: 60px 24px 48px;
+      order: 1;
+    }
+
+    .hero-right {
+      min-height: 260px;
+      order: 0;
+    }
+
+    .section-cards { padding: 80px 24px; }
+
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+
+    footer {
+      padding: 24px;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">Aether</a>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="scan.html">Structure Scan</a>
+    <a href="results.html">Results</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Business Formation Guidance — v1.2</p>
+      <h1 class="hero-headline">Structure determines outcomes.<br><em>Filing is execution.</em></h1>
+      <p class="hero-sub">For first-time founders who want to get it right from the start. Answer eight questions. Receive a tailored formation blueprint in under three minutes.</p>
+      <a href="scan.html" class="btn-primary">Start My Structure Scan</a>
+      <p class="hero-note">No account required. Your answers remain on your device.</p>
+    </div>
+    <div class="hero-right">
+      <div class="float-text">
+        <div class="float-item">LLC</div>
+        <div class="float-item">S-Corp</div>
+        <div class="float-item">C-Corp</div>
+        <div class="float-item">EIN Strategy</div>
+        <div class="hero-divider"></div>
+        <div class="float-item">Formation Intelligence</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cards">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">Three steps to a formation blueprint</h2>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-line"></div>
+        <div class="card-number">01</div>
+        <h3 class="card-title">Tell us your situation</h3>
+        <p class="card-desc">Eight targeted questions about your operating state, revenue expectations, ownership structure, and strategic priorities. No personal information required.</p>
+      </div>
+      <div class="card">
+        <div class="card-line"></div>
+        <div class="card-number">02</div>
+        <h3 class="card-title">Get your recommendation</h3>
+        <p class="card-desc">Our decision logic maps your inputs to an entity type — LLC, S-Corp election, Multi-Member, or C-Corporation — with a full classification panel and rationale.</p>
+      </div>
+      <div class="card">
+        <div class="card-line"></div>
+        <div class="card-number">03</div>
+        <h3 class="card-title">Choose your providers</h3>
+        <p class="card-desc">Review three vetted formation services. Compare pricing, privacy practices, and support structures. File with the one that fits your approach.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="footer-copy">© 2026 AETHER. Educational guidance only — not legal advice.</span>
+  <a href="legal.html" class="footer-link">Privacy &amp; Terms</a>
+</footer>
+
+</body>
+</html>

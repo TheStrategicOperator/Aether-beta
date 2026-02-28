@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AETHER — Your Formation Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1410;
+    --bg2: #211C16;
+    --bg3: #2A221A;
+    --gold: #C9A14A;
+    --gold-light: #E2C07A;
+    --gold-dim: rgba(201,161,74,0.10);
+    --text: #F0EAE0;
+    --text-muted: #8A7D6A;
+    --text-dim: #5A5048;
+    --border: rgba(201,161,74,0.18);
+    --border-dim: rgba(255,255,255,0.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.6; }
+
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(26,20,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-dim); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; letter-spacing: 0.22em; color: var(--gold); text-decoration: none; text-transform: uppercase; }
+  nav { display: flex; gap: 40px; align-items: center; }
+  nav a { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  nav a:hover, nav a.active { color: var(--gold); }
+
+  /* ── MAIN ── */
+  .results-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 120px 40px 80px;
+  }
+
+  .result-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .result-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .result-headline span {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .result-sub {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+
+  /* ── CLASSIFICATION PANEL ── */
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .panel-header {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .panel-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .panel-field {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border-dim);
+    border-right: 1px solid var(--border-dim);
+  }
+  .panel-field:nth-child(even) { border-right: none; }
+  .panel-field:nth-last-child(-n+2) { border-bottom: none; }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .field-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 40px;
+    padding: 32px;
+    border: 1px solid var(--border-dim);
+    background: var(--bg2);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .why-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .why-list li {
+    font-size: 15px;
+    color: var(--text-muted);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .why-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  .strategic-notes {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .next-actions {
+    list-style: none;
+    counter-reset: actions;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .next-actions li {
+    counter-increment: actions;
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 14px 18px 14px 52px;
+    background: var(--bg);
+    border: 1px solid var(--border-dim);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .next-actions li::before {
+    content: counter(actions, decimal-leading-zero);
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── PHASE II ── */
+  .phase2 {
+    margin-bottom: 40px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--bg2), #1E1810);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.9s forwards;
+  }
+
+  .phase2::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,161,74,0.06) 0%, transparent 70%);
+  }
+
+  .phase2-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .phase2-head {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .phase2-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .phase2-list li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .phase2-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  /* ── ACTION BUTTONS ── */
+  .action-row {
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1.0s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: var(--gold);
+    color: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: transparent;
+    border: 1px solid var(--border-dim);
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ── NO DATA STATE ── */
+  .no-data {
+    text-align: center;
+    padding: 80px 40px;
+  }
+  .no-data h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; margin-bottom: 16px; }
+  .no-data p { color: var(--text-muted); margin-bottom: 32px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  footer { padding: 32px 80px; border-top: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; }
+  .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: 0.06em; }
+  .footer-link { font-size: 12px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+  .footer-link:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    header { padding: 0 24px; }
+    nav { gap: 20px; }
+    .results-wrap { padding: 100px 20px 60px; }
+    .panel-body { grid-template-columns: 1fr; }
+    .panel-field:nth-child(even) { border-right: none; }
+    .panel-field { border-right: none; }
+    .panel-field:last-child { border-bottom: none; }
+    .phase2-list { grid-template-columns: 1fr; }
+    .action-row { flex-direction: column; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">Aether</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="scan.html">Structure Scan</a>
+    <a href="results.html" class="active">Results</a>
+  </nav>
+</header>
+
+<div class="results-wrap" id="resultsWrap">
+  <!-- Rendered by JS -->
+</div>
+
+<footer>
+  <span class="footer-copy">© 2026 AETHER. Educational guidance only — not legal advice.</span>
+  <a href="legal.html" class="footer-link">Privacy &amp; Terms</a>
+</footer>
+
+<script>
+const answers = JSON.parse(localStorage.getItem('aether_answers') || '{}');
+
+function decide(a) {
+  if (!a.revenue && !a.owners) return null;
+
+  const rev = a.revenue || '';
+  const owners = a.owners || '';
+  const investors = a.investors || '';
+  const priority = a.priority || '';
+  const focus = a.businessFocus || '';
+
+  if (investors === 'Yes, investors' && (focus === 'Software' || focus === 'Other' || focus === 'Services')) {
+    return 'C-Corporation';
+  }
+  if (investors === 'Yes, investors') {
+    return 'C-Corporation';
+  }
+  if ((owners === '2' || owners === '3–4' || owners === '5+') && investors !== 'Yes, investors') {
+    return 'Multi-Member LLC';
+  }
+  if ((rev === '$125K – $500K' || rev === '$500K+') && priority === 'Minimize taxes' && owners === '1') {
+    return 'LLC with S-Corp Election';
+  }
+  if ((rev === 'Under $50K' || rev === '$50K – $125K') && owners === '1') {
+    return 'Single-Member LLC';
+  }
+  return 'Single-Member LLC';
+}
+
+const BLUEPRINTS = {
+  'Single-Member LLC': {
+    subhead: 'The optimal foundation for solo founders at the early stage.',
+    classification: {
+      'Foundation Type': 'Limited Liability Company',
+      'Tax Path': 'Pass-through (Schedule C or Schedule E)',
+      'Governance': 'Single-member operating agreement',
+      'Upgrade Trigger': 'Revenue exceeding $80K–$100K net',
+      'Risk Level': 'Low',
+      'Operating State': null
+    },
+    why: [
+      'Provides full personal liability separation without the administrative complexity of a corporation.',
+      'Pass-through taxation eliminates the double-taxation risk present in C-Corp structures.',
+      'Minimal annual requirements — most states require only a simple annual report.',
+      'Flexible management structure allows you to scale without re-filing.',
+      'Straightforward path to S-Corp election when revenue justifies the transition.'
+    ],
+    notes: 'For pre-revenue and sub-$125K founders, the Single-Member LLC delivers maximum protection with minimum overhead. The structure is intentionally simple — complexity should be introduced only when revenue, partners, or investors demand it. Revisit this recommendation once net profit consistently exceeds $80K annually.',
+    actions: [
+      'Select your formation state and verify it against your home operating state.',
+      'Draft a single-member operating agreement — even without partners, this is essential.',
+      'File Articles of Organization with your chosen state.',
+      'Apply for an EIN (Employer Identification Number) via IRS Form SS-4.',
+      'Open a dedicated business bank account using your EIN.',
+      'Establish a simple bookkeeping system (even a spreadsheet at this stage).',
+      'Understand your state\'s annual report requirements and calendar the deadline.',
+      'Consult a CPA before your first tax year to confirm filing elections.'
+    ],
+    phase2: [
+      'S-Corp election consideration at $80K+ net profit',
+      'Multi-member structure if co-founders join',
+      'Business credit profile establishment (Net-30 accounts)',
+      'Registered agent upgrade for full address privacy'
+    ]
+  },
+  'LLC with S-Corp Election': {
+    subhead: 'Pass-through efficiency with optimized self-employment tax treatment.',
+    classification: {
+      'Foundation Type': 'LLC with S-Corp Tax Election',
+      'Tax Path': 'S-Corporation (Form 2553 election)',
+      'Governance': 'Operating agreement + shareholder resolution',
+      'Upgrade Trigger': 'Net profit exceeding $500K or investor round',
+      'Risk Level': 'Low–Medium',
+      'Operating State': null
+    },
+    why: [
+      'S-Corp election allows founders to split income between salary and distributions, reducing self-employment tax.',
+      'Maintains the operational simplicity of an LLC while unlocking corporate tax advantages.',
+      'Particularly effective for service businesses generating $125K–$500K in net annual profit.',
+      'Reasonable salary requirement protects against IRS reclassification risk when properly administered.',
+      'Avoids double taxation that would apply to a straight C-Corporation structure.'
+    ],
+    notes: 'The LLC/S-Corp hybrid is one of the most tax-efficient structures for single-owner service businesses in the $125K–$500K revenue band. The primary administrative addition is payroll — you must pay yourself a reasonable salary before taking distributions. Work with a CPA to model your optimal salary-to-distribution split before making the Form 2553 election.',
+    actions: [
+      'Form the LLC as the underlying entity first.',
+      'File Form 2553 with the IRS within 75 days of formation (or by March 15 for existing entities).',
+      'Draft an operating agreement that reflects the S-Corp governance structure.',
+      'Establish a payroll system and pay yourself a documented reasonable salary.',
+      'Open separate accounts for operating funds and owner distributions.',
+      'Set up quarterly estimated tax payments to cover payroll and income obligations.',
+      'Apply for an EIN immediately upon LLC formation if not already filed.',
+      'Engage a CPA for your first full tax year under the S-Corp election.'
+    ],
+    phase2: [
+      'Payroll system and PEO evaluation',
+      'Business credit and vendor account strategy',
+      'State nexus analysis for multi-state operations',
+      'Retirement plan setup (Solo 401K or SEP-IRA)'
+    ]
+  },
+  'Multi-Member LLC': {
+    subhead: 'The standard foundation for co-founder businesses without institutional investors.',
+    classification: {
+      'Foundation Type': 'Multi-Member Limited Liability Company',
+      'Tax Path': 'Partnership taxation (Form 1065)',
+      'Governance': 'Multi-member operating agreement (critical)',
+      'Upgrade Trigger': 'Institutional investment or revenue over $1M',
+      'Risk Level': 'Low–Medium',
+      'Operating State': null
+    },
+    why: [
+      'Cleanly separates personal assets from business liabilities for all members.',
+      'Partnership taxation is more favorable than corporate taxation for most small multi-owner businesses.',
+      'Flexible profit allocation — distributions do not have to be proportional to ownership percentage.',
+      'Avoids the formality burden of a multi-shareholder corporation.',
+      'Straightforward path to C-Corp conversion if institutional investment is pursued later.'
+    ],
+    notes: 'The multi-member operating agreement is the most important document you will draft at this stage. Vague agreements between partners are the primary source of business dissolution. Define capital contributions, profit splits, decision-making authority, buyout provisions, and dissolution terms before the first dollar is earned. Do not use a template without legal review.',
+    actions: [
+      'Determine ownership percentages and document them in writing before filing.',
+      'File Articles of Organization listing all members.',
+      'Draft a comprehensive multi-member operating agreement — invest in legal counsel here.',
+      'Apply for an EIN as a multi-member LLC (required, even without employees).',
+      'Open a business bank account and establish individual capital accounts for each member.',
+      'Establish a voting protocol and decision threshold for major business decisions.',
+      'Calendar the annual report deadline for your formation state.',
+      'Model each member\'s estimated tax liability with a CPA before year-end.'
+    ],
+    phase2: [
+      'Buyout provision and valuation methodology review',
+      'S-Corp election feasibility analysis',
+      'Operating agreement amendment process as business evolves',
+      'Equity compensation framework if hiring employees'
+    ]
+  },
+  'C-Corporation': {
+    subhead: 'The preferred vehicle for venture-backed and institutional-scale businesses.',
+    classification: {
+      'Foundation Type': 'C-Corporation (Delaware recommended)',
+      'Tax Path': 'Corporate taxation (Form 1120)',
+      'Governance': 'Bylaws, board of directors, shareholder agreements',
+      'Upgrade Trigger': 'Already the preferred cap-table structure',
+      'Risk Level': 'Medium (managed via proper governance)',
+      'Operating State': null
+    },
+    why: [
+      'Institutional investors overwhelmingly prefer C-Corporations — required for QSBS (Section 1202) treatment.',
+      'Stock-based compensation for employees is cleaner and more legally established in corporate form.',
+      'Delaware C-Corp is the global standard for startup capitalization and VC diligence.',
+      'Separation of personal and business assets is maximally defined under corporate law.',
+      'Corporate structure supports multiple share classes necessary for investor and option pool mechanics.'
+    ],
+    notes: 'C-Corp formation is a deliberate commitment to an investor-compatible capital structure. The double taxation concern (corporate + dividend) is largely academic for growth-stage companies that reinvest profits. Prioritize Delaware as your formation state — investors will expect it, and Delaware corporate law is the most well-developed in the country. Budget for legal counsel during formation; this is not a DIY filing.',
+    actions: [
+      'Engage a startup attorney before filing — corporate formation has downstream implications.',
+      'File in Delaware for investor compatibility, then register as a foreign entity in your home state.',
+      'Draft bylaws, shareholder agreements, and a founders\' stock purchase agreement simultaneously.',
+      'Apply for an EIN as a C-Corporation.',
+      'Authorize and issue founders shares at a low par value, immediately.',
+      'Consider 83(b) election filings for all founding shareholders within 30 days of grant.',
+      'Establish a cap table tool (Carta or equivalent) from day one.',
+      'Consult a CPA on QSBS eligibility to preserve the Section 1202 exclusion window.'
+    ],
+    phase2: [
+      'Seed or pre-seed round documentation (SAFEs or convertible notes)',
+      'Employee option pool setup (typically 10–20%)',
+      'State compliance calendar for Delaware + home state',
+      'R&D tax credit eligibility analysis'
+    ]
+  }
+};
+
+function render() {
+  const wrap = document.getElementById('resultsWrap');
+  const entity = decide(answers);
+
+  if (!entity || !answers.revenue) {
+    wrap.innerHTML = `<div class="no-data">
+      <h2>No scan data found.</h2>
+      <p>Complete the Structure Scan to generate your formation blueprint.</p>
+      <a href="scan.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:var(--gold);color:var(--bg);font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;">Begin Structure Scan →</a>
+    </div>`;
+    return;
+  }
+
+  const bp = BLUEPRINTS[entity];
+  const opState = answers.operatingState || 'Not specified';
+
+  // Inject operating state
+  bp.classification['Operating State'] = opState;
+
+  const classFields = Object.entries(bp.classification).map(([k, v]) => `
+    <div class="panel-field">
+      <div class="field-label">${k}</div>
+      <div class="field-value">${v}</div>
+    </div>
+  `).join('');
+
+  const whyItems = bp.why.map(w => `<li>${w}</li>`).join('');
+  const actionItems = bp.actions.map(a => `<li>${a}</li>`).join('');
+  const phase2Items = bp.phase2.map(p => `<li>${p}</li>`).join('');
+
+  wrap.innerHTML = `
+    <p class="result-eyebrow">Formation Blueprint — Based on your responses</p>
+    <h1 class="result-headline">Recommended:<br><span>${entity}</span></h1>
+    <p class="result-sub">${bp.subhead}</p>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Entity Classification</span>
+      </div>
+      <div class="panel-body">${classFields}</div>
+    </div>
+
+    <div class="section" style="animation-delay: 0.5s">
+      <div class="section-title">Why This Fits</div>
+      <ul class="why-list">${whyItems}</ul>
+    </div>
+
+    <div class="section" style="animation-delay: 0.6s">
+      <div class="section-title">Strategic Notes</div>
+      <p class="strategic-notes">${bp.notes}</p>
+    </div>
+
+    <div class="section" style="animation-delay: 0.7s">
+      <div class="section-title">Next Actions</div>
+      <ol class="next-actions">${actionItems}</ol>
+    </div>
+
+    <div class="phase2">
+      <div class="phase2-title">Phase II Preview</div>
+      <div class="phase2-head">What comes after formation</div>
+      <ul class="phase2-list">${phase2Items}</ul>
+    </div>
+
+    <div class="action-row">
+      <a href="partners.html" class="btn-primary">View Formation Providers →</a>
+      <button class="btn-secondary" onclick="resetScan()">← Run Scan Again</button>
+    </div>
+  `;
+}
+
+function resetScan() {
+  localStorage.removeItem('aether_answers');
+  localStorage.removeItem('aether_step');
+  window.location.href = 'scan.html';
+}
+
+render();
+</script>
+</body>
+</html>

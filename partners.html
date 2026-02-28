@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AETHER — Formation Providers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1410;
+    --bg2: #211C16;
+    --bg3: #2A221A;
+    --gold: #C9A14A;
+    --gold-light: #E2C07A;
+    --gold-dim: rgba(201,161,74,0.10);
+    --text: #F0EAE0;
+    --text-muted: #8A7D6A;
+    --text-dim: #5A5048;
+    --border: rgba(201,161,74,0.18);
+    --border-dim: rgba(255,255,255,0.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(26,20,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-dim); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; letter-spacing: 0.22em; color: var(--gold); text-decoration: none; text-transform: uppercase; }
+  nav { display: flex; gap: 40px; align-items: center; }
+  nav a { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  nav a:hover, nav a.active { color: var(--gold); }
+
+  /* ── HERO ── */
+  .page-hero {
+    padding: 140px 80px 80px;
+    border-bottom: 1px solid var(--border-dim);
+    display: grid;
+    grid-template-columns: 60% 40%;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .page-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 380px;
+    align-self: end;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+
+  /* ── DISCLOSURE ── */
+  .disclosure {
+    margin: 0 80px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-dim);
+    border-left: 2px solid var(--gold);
+    background: var(--gold-dim);
+  }
+
+  .disclosure p {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── PROVIDERS GRID ── */
+  .providers-section {
+    padding: 80px;
+    flex: 1;
+  }
+
+  .providers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-dim);
+    border: 1px solid var(--border-dim);
+    margin-bottom: 80px;
+  }
+
+  .provider-card {
+    background: var(--bg);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .provider-card:hover { background: var(--bg2); }
+
+  .provider-accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+  .provider-card:hover .provider-accent { background: var(--gold); }
+
+  .provider-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .provider-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .provider-price {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+
+  .provider-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    flex: 1;
+  }
+
+  .provider-features li {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .provider-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 12px;
+  }
+
+  .provider-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: auto;
+  }
+  .provider-cta:hover {
+    background: var(--gold);
+    color: var(--bg);
+  }
+
+  .provider-cta-arrow {
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+  .provider-cta:hover .provider-cta-arrow { transform: translateX(4px); }
+
+  /* ── COMPARISON ── */
+  .compare-section {
+    margin-top: 64px;
+    border: 1px solid var(--border-dim);
+  }
+
+  .compare-header {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border-dim);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr 1fr;
+  }
+
+  .compare-cell {
+    padding: 18px 24px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-dim);
+    border-right: 1px solid var(--border-dim);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .compare-cell:nth-child(4n) { border-right: none; }
+  .compare-cell.label { color: var(--text-dim); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .compare-cell.head { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--text); font-weight: 400; }
+  .compare-cell.good { color: var(--gold); }
+  .compare-row-last .compare-cell { border-bottom: none; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer-section {
+    padding: 40px 80px;
+    border-top: 1px solid var(--border-dim);
+    background: var(--bg2);
+  }
+
+  .disclaimer-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 700px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  footer { padding: 32px 80px; border-top: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; }
+  .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: 0.06em; }
+  .footer-link { font-size: 12px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+  .footer-link:hover { color: var(--gold); }
+
+  @media (max-width: 900px) {
+    header { padding: 0 24px; }
+    nav { gap: 20px; }
+    .page-hero { grid-template-columns: 1fr; padding: 120px 24px 60px; }
+    .disclosure { margin: 0 24px; }
+    .providers-section { padding: 48px 24px; }
+    .providers-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr 1fr; }
+    .disclaimer-section { padding: 32px 24px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">Aether</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="scan.html">Structure Scan</a>
+    <a href="results.html">Results</a>
+  </nav>
+</header>
+
+<section class="page-hero">
+  <div>
+    <p class="page-eyebrow">Vetted Formation Services</p>
+    <h1 class="page-title">Three providers.<br>Evaluated on price,<br>privacy, and process.</h1>
+  </div>
+  <p class="page-desc">Each service below has been selected for reliability and transparency. Review their differences, then file with the one that matches your priorities.</p>
+</section>
+
+<div class="disclosure" style="margin-top: 0; border-top: none; border-bottom: 1px solid var(--border-dim); padding: 16px 80px;">
+  <p><strong style="color: var(--gold); font-weight: 500;">Affiliate Disclosure:</strong> AETHER receives compensation when you use the links below. This does not affect our recommendations — providers were selected independently based on quality criteria.</p>
+</div>
+
+<div class="providers-section">
+  <div class="providers-grid">
+
+    <div class="provider-card">
+      <div class="provider-accent"></div>
+      <div class="provider-tag">Provider 01 — Privacy-First</div>
+      <h2 class="provider-name">Northwest Registered Agent</h2>
+      <p class="provider-price">$39 + state fees</p>
+      <ul class="provider-features">
+        <li>Uses their address on public filings — your personal address stays private</li>
+        <li>Transparent, flat-rate pricing with no hidden upsells</li>
+        <li>Includes one year of registered agent service</li>
+        <li>Fast turnaround and responsive customer support</li>
+        <li>Suitable for Wyoming, Delaware, and multi-state operations</li>
+      </ul>
+      <a href="https://northwestregisteredagent.com" target="_blank" rel="noopener" class="provider-cta">
+        Visit Northwest <span class="provider-cta-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="provider-card">
+      <div class="provider-accent"></div>
+      <div class="provider-tag">Provider 02 — Streamlined</div>
+      <h2 class="provider-name">MyLLC.com</h2>
+      <p class="provider-price">$0 + state fees</p>
+      <ul class="provider-features">
+        <li>No base service fee — pay only what your state requires</li>
+        <li>Clean, guided filing interface for first-time founders</li>
+        <li>Handles LLC and INC formations across all 50 states</li>
+        <li>Operating agreement templates included</li>
+        <li>Good option when cost minimization is the primary constraint</li>
+      </ul>
+      <a href="https://myllc.com" target="_blank" rel="noopener" class="provider-cta">
+        Visit MyLLC <span class="provider-cta-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="provider-card">
+      <div class="provider-accent"></div>
+      <div class="provider-tag">Provider 03 — Full-Service</div>
+      <h2 class="provider-name">Laughlin Associates</h2>
+      <p class="provider-price">$99 + state fees</p>
+      <ul class="provider-features">
+        <li>Over 50 years in the formation services industry</li>
+        <li>Specializes in Nevada and Wyoming asset protection strategies</li>
+        <li>Comprehensive compliance tracking and annual report reminders</li>
+        <li>Business consulting services available alongside formation</li>
+        <li>Preferred by founders seeking a long-term compliance partner</li>
+      </ul>
+      <a href="https://laughlinassociates.com" target="_blank" rel="noopener" class="provider-cta">
+        Visit Laughlin <span class="provider-cta-arrow">→</span>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="compare-section">
+    <div class="compare-header">Provider Comparison</div>
+    <div class="compare-grid">
+      <div class="compare-cell label"></div>
+      <div class="compare-cell head">Northwest</div>
+      <div class="compare-cell head">MyLLC</div>
+      <div class="compare-cell head">Laughlin</div>
+
+      <div class="compare-cell label">Base Price</div>
+      <div class="compare-cell">$39 + state fees</div>
+      <div class="compare-cell good">$0 + state fees</div>
+      <div class="compare-cell">$99 + state fees</div>
+
+      <div class="compare-cell label">Privacy Focus</div>
+      <div class="compare-cell good">High — address shielding</div>
+      <div class="compare-cell">Standard</div>
+      <div class="compare-cell">High — NV/WY specialist</div>
+
+      <div class="compare-cell label">Registered Agent</div>
+      <div class="compare-cell good">Included (1 year)</div>
+      <div class="compare-cell">Available add-on</div>
+      <div class="compare-cell">Included</div>
+
+      <div class="compare-cell label">Best For</div>
+      <div class="compare-cell">Privacy-conscious founders</div>
+      <div class="compare-cell">Budget-first early stage</div>
+      <div class="compare-cell">Long-term compliance</div>
+
+      <div class="compare-cell label compare-row-last" style="border-bottom:none;"></div>
+      <div class="compare-cell compare-row-last" style="border-bottom:none;"><a href="https://northwestregisteredagent.com" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">Visit →</a></div>
+      <div class="compare-cell compare-row-last" style="border-bottom:none;"><a href="https://myllc.com" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">Visit →</a></div>
+      <div class="compare-cell compare-row-last" style="border-bottom:none;"><a href="https://laughlinassociates.com" target="_blank" rel="noopener" style="color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">Visit →</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer-section">
+  <p class="disclaimer-text">The providers listed above are presented for informational and comparative purposes only. AETHER does not guarantee the accuracy of pricing, availability, or service quality. Formation fees vary by state and are subject to change. Consult the provider's website directly for current terms. This guidance does not constitute legal or financial advice.</p>
+</div>
+
+<footer>
+  <span class="footer-copy">© 2026 AETHER. Educational guidance only — not legal advice.</span>
+  <a href="legal.html" class="footer-link">Privacy &amp; Terms</a>
+</footer>
+
+</body>
+</html>
